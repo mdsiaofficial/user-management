@@ -5,6 +5,7 @@ const User = require('./src/models/user.model.Js');
 const mongoose = require('mongoose');
 const authRouter = require('./src/routes/auth.routes');
 const adminRouter = require('./src/routes/admin.routes');
+const userRouter = require('./src/routes/users.routes');
 
 
 const app = express();
@@ -25,16 +26,7 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 
-app.get('/api/v1/users', async (req, res) => {
-  const users = await User.find().select('-password');
-  res.status(201).json(users);
-});
-
-app.get('/api/v1/user/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId).select('-password');
-  res.status(201).json(user);
-});
+app.use('/api/v1/user', userRouter)
 
 app.use('/api/v1/admin', adminRouter)
 
