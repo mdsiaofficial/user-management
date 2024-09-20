@@ -1,6 +1,6 @@
 
 
-export const asyncHandler = (fn) => {
+const asyncHandler = (fn) => {
 
   return async (req, res, next) => {
 
@@ -12,3 +12,5 @@ export const asyncHandler = (fn) => {
     
   }
 }
+
+module.exports = asyncHandler;
