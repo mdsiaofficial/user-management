@@ -35,20 +35,33 @@ const login = asyncHandler(async (req, res) => {
   await user.save();
 
   // generate JWT
-    const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email,
-        status: user.status
-      },
-      process.env.JWT_SECRET || 'secret',
-      { expiresIn: '1h' }
+  const token = jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+      status: user.status
+    },
+    process.env.JWT_SECRET || 'secret',
+    { expiresIn: '1h' }
   );
-  console.log(req.body);
-  res.cookie("userToken", token)
+  // console.log(req.body);
+  const exp = Date.now() + 1000 * 60 * 60 * 24 * 30; //30 days
+    // const exp = Date.now() + 1000 * 10; //10 sec // for test
+  res.cookie(
+    "userToken",
+    token,
+    {
+      expires: new Date(exp),
+      httpOnly: true,
+      sameSite: 'lax',
+      // secure: process.env.NODE_ENV === 'production',
+      secure: true,
+    }
+  );
+
   res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email, status: user.status } });
 
 });
 
 
-module.exports = {register, login};
+module.exports = { register, login };

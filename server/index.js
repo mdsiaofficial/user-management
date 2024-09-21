@@ -1,16 +1,15 @@
+require('dotenv').config();
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('./src/models/user.model.Js');
 const mongoose = require('mongoose');
 const authRouter = require('./src/routes/auth.routes');
 const adminRouter = require('./src/routes/admin.routes');
 const userRouter = require('./src/routes/users.routes');
-
+const cors = require('cors');
 
 const app = express();
+app.use(cors())
 
-mongoose.connect('mongodb+srv://mdsiaofficial:task4@task4.r4znx.mongodb.net/usermanagement?retryWrites=true&w=majority&appName=task4')
+mongoose.connect(process.env.DB_URL)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -25,11 +24,10 @@ app.get('/api/v1', (req, res) => {
 })
 
 app.use('/api/v1/auth', authRouter);
-
 app.use('/api/v1/user', userRouter)
-
 app.use('/api/v1/admin', adminRouter)
 
-app.listen(5000, () => {
+
+app.listen(process.env.PORT || 4000, () => {
   console.log('Server listening on port 5000');
 });
